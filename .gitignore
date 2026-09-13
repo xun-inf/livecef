@@ -1,0 +1,14 @@
+.vscode
+.build
+.build.*
+dep/cef
+output
+.DS_Store
+CMakeLists.txt.user
+docs/doxygen/xml
+out
+scripts/doxygen/xml
+include/CefView_global.h
+.idea/
+cmake-build-*/
+build
