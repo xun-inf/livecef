@@ -137,6 +137,7 @@ set(Qt_VERSION ${Qt${QT_VERSION_MAJOR}Core_VERSION})
 # ##############################################################
 # thirdparty cef-builds
 add_subdirectory(thirdparty)
+include(SetupCef)
 
 if(OS_MACOS)
   # detect minimum deployment target by Qt

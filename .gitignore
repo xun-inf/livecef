@@ -1,7 +1,7 @@
 .vscode
 .build
 .build.*
-dep/cef
+_deps
 output
 .DS_Store
 CMakeLists.txt.user

@@ -32,7 +32,7 @@ else()
 endif()
 
 # set cef sdk package name
-set(CEF_SDK_WORKSPACE "${CMAKE_CURRENT_SOURCE_DIR}/dep")
+set(CEF_SDK_WORKSPACE "${CMAKE_CURRENT_SOURCE_DIR}/_deps")
 
 if(OS_MACOS AND PROJECT_ARCH STREQUAL "x86_64")
   # macosx64
@@ -120,6 +120,8 @@ find_package(CEF REQUIRED)
 
 # Add libcef dll wrapper
 add_subdirectory(${CEF_LIBCEF_DLL_WRAPPER_PATH} libcef_dll_wrapper)
+
+ADD_LOGICAL_TARGET("libcef_lib" "${CEF_LIB_DEBUG}" "${CEF_LIB_RELEASE}")
 
 PRINT_CEF_CONFIG()
 
