@@ -8,24 +8,24 @@
 #pragma region cef_headers
 #include <include/cef_app.h>
 
-#include <CefConfig.h>
+#include <qcefconfig.h>
 
-class CefConfigPrivate
+class QCefConfigPrivate
 {
   typedef std::unordered_map<std::string, std::string> ArgsMap;
 
 public:
-  explicit CefConfigPrivate();
+  explicit QCefConfigPrivate();
 
-  static void CopyToCefSettings(const CefConfig* config, CefSettings* settings);
+  static void CopyToCefSettings(const QCefConfig* config, CefSettings* settings);
 
-  static ArgsMap& GetCommandLineArgs(const CefConfig* config);
+  static ArgsMap& GetCommandLineArgs(const QCefConfig* config);
 
 public:
   std::string userAgent_;
   std::string cachePath_;
 
-  int logLevel_ = CefConfig::LOGLEVEL_DEFAULT;
+  int logLevel_ = QCefConfig::LOGLEVEL_DEFAULT;
 
 #if defined(Q_OS_MACOS)
   bool standaloneMessgeLoopEnabled_ = false;

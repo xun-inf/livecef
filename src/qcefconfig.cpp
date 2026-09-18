@@ -1,16 +1,17 @@
-#include "CefConfigPrivate.h"
+#include <qcefconfig.h>
+#include "qcefconfig_p.h"
 
-CefConfigPrivate::CefConfigPrivate() {}
+// QCefConfigPrivate
+QCefConfigPrivate::QCefConfigPrivate() {}
 
-void
-CefConfigPrivate::CopyToCefSettings(const CefConfig* config, CefSettings* settings)
+void QCefConfigPrivate::CopyToCefSettings(const QCefConfig* config, CefSettings* settings)
 {
   if (!settings) {
     return;
   }
 
   if (!config) {
-    CefConfigPrivate cfg;
+    QCefConfigPrivate cfg;
 
     // copy the mandatory fields
     settings->no_sandbox = static_cast<int>(cfg.sandboxDisabled_);
@@ -78,8 +79,7 @@ CefConfigPrivate::CopyToCefSettings(const CefConfig* config, CefSettings* settin
   }
 }
 
-CefConfigPrivate::ArgsMap&
-CefConfigPrivate::GetCommandLineArgs(const CefConfig* config)
+QCefConfigPrivate::ArgsMap& QCefConfigPrivate::GetCommandLineArgs(const CefConfig* config)
 {
   if (!config) {
     static ArgsMap emptyArgs;
@@ -87,4 +87,127 @@ CefConfigPrivate::GetCommandLineArgs(const CefConfig* config)
   }
 
   return config->d_ptr->commandLineArgs_;
+}
+
+
+// QCefConfig
+REGISTER_METATYPE(QCefConfig);
+
+QCefConfig::QCefConfig()
+  : d_ptr(new QCefConfigPrivate)
+{
+}
+
+QCefConfig::QCefConfig(const QCefConfig& other)
+  : d_ptr(new QCefConfigPrivate)
+{
+  *d_ptr = *(other.d_ptr);
+}
+
+QCefConfig& QCefConfig::operator=(const QCefConfig& other)
+{
+  *d_ptr = *(other.d_ptr);
+  return *this;
+}
+
+QCefConfig::~QCefConfig() {}
+
+void QCefConfig::addCommandLineSwitch(const QString& smitch)
+{
+  if (smitch.isEmpty())
+    return;
+
+  Q_D(QCefConfig);
+  d->commandLineArgs_[smitch.toStdString()] = std::string();
+}
+
+void QCefConfig::addCommandLineSwitchWithValue(const QString& smitch, const QString& v)
+{
+  if (smitch.isEmpty() || v.isEmpty())
+    return;
+
+  Q_D(QCefConfig);
+  d->commandLineArgs_[smitch.toStdString()] = v.toStdString();
+}
+
+void QCefConfig::setStandaloneMessageLoopEnabled(const bool enabled)
+{
+  Q_D(QCefConfig);
+
+  #if defined(Q_OS_MACOS)
+    qWarning() << "StandaloneMessgeLoop is not supported on macOS";
+  #else
+    d->standaloneMessgeLoopEnabled_ = enabled;
+  #endif
+}
+
+const bool QCefConfig::standaloneMessageLoopEnabled() const
+{
+  Q_D(const QCefConfig);
+  return d->standaloneMessgeLoopEnabled_;
+}
+
+void QCefConfig::setSandboxDisabled(const bool disabled)
+{
+  Q_D(QCefConfig);
+
+#if defined(CEF_USE_SANDBOX)
+  d->sandboxDisabled_ = disabled;
+#else
+  qWarning() << "Sandbox status is not configurable when compile switch CEF_USE_SANDBOX is OFF";
+#endif
+}
+
+const bool QCefConfig::sandboxDisabled() const
+{
+  Q_D(const QCefConfig);
+  return d->sandboxDisabled_;
+}
+
+void QCefConfig::setLogLevel(const LogLevel level)
+{
+  Q_D(QCefConfig);
+  d->logLevel_ = level;
+}
+
+const QCefConfig::LogLevel QCefConfig::logLevel() const
+{
+  Q_D(const QCefConfig);
+  return static_cast<LogLevel>(d->logLevel_);
+}
+
+void QCefConfig::setUserAgent(const QString& agent)
+{
+  Q_D(QCefConfig);
+  d->userAgent_ = agent.toStdString();
+}
+
+const QString QCefConfig::userAgent() const
+{
+  Q_D(const QCefConfig);
+  return QString::fromStdString(d->userAgent_);
+}
+
+void QCefConfig::setCachePath(const QString& path)
+{
+  Q_D(QCefConfig);
+  d->cachePath_ = path.toStdString();
+}
+
+const QString QCefConfig::cachePath() const
+{
+  Q_D(const QCefConfig);
+  return QString::fromStdString(d->cachePath_);
+}
+
+void QCefConfig::setRemoteDebuggingPort(short port)
+{
+  Q_D(QCefConfig);
+  d->remoteDebuggingport_ = port;
+}
+
+const short QCefConfig::remoteDebuggingPort() const
+{
+  Q_D(const QCefConfig);
+  return d->remoteDebuggingport_;
 }

@@ -1,18 +1,18 @@
-#ifndef CEFCONFIG_H
-#define CEFCONFIG_H
+#ifndef QCEFCONFIG_H
+#define QCEFCONFIG_H
 #pragma once
 
-#include <CefView_global.h>
+#include <qcefium_global.h>
 
 #pragma region qt_headers
 #include <QString>
 #include <QScopedPointer>
 
-class CefConfigPrivate;
+class QCefConfigPrivate;
 
-class LIVECEF_EXPORT CefConfig
+class QCEFIUM_EXPORT QCefConfig
 {
-  Q_DECLARE_PRIVATE(CefConfig)
+  Q_DECLARE_PRIVATE(QCefConfig)
   QScopedPointer<CefConfigPrivate> d_ptr;
 
 public:
@@ -29,13 +29,13 @@ public:
   };
 
 public:
-  CefConfig();
+  QCefConfig();
 
-  CefConfig(const CefConfig& other);
+  QCefConfig(const QCefConfig& other);
 
-  CefConfig& operator=(const CefConfig& other);
+  QCefConfig& operator=(const QCefConfig& other);
 
-  ~CefConfig();
+  ~QCefConfig();
 
   void addCommandLineSwitch(const QString& smitch);
 
@@ -60,6 +60,6 @@ public:
   const short remoteDebuggingPort() const;
 };
 
-Q_DECLARE_METATYPE(CefConfig);
+Q_DECLARE_METATYPE(QCefConfig);
 
 #endif

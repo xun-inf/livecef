@@ -1,10 +1,16 @@
-#include "CefContextPrivate.h"
+#include <qcefcontext.h>
 
-#include <CefContext.h>
+#include "qcefcontext_p.h"
 
+#pragma region qt_headers
+#include <QDebug>
+#pragma endregion
+
+/////////////////////////////////////////////////
+// QCefContextPrivate
 const int64_t kCefWorkerIntervalMs = (1000 / 60); // 60 fps
 
-CefContextPrivate::CefContextPrivate(QCoreApplication* app, int argc, char** argv)
+QCefContextPrivate::QCefContextPrivate(QCoreApplication* app, int argc, char** argv)
   : argc_(argc)
   , argv_(argv)
   , config_(nullptr)
@@ -14,13 +20,13 @@ CefContextPrivate::CefContextPrivate(QCoreApplication* app, int argc, char** arg
   connect(app, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
 }
 
-CefContextPrivate::~CefContextPrivate()
+QCefContextPrivate::~QCefContextPrivate()
 {
   disconnect(&cefWorkerTimer_, SIGNAL(timeout()), this, SLOT(performCefLoopWork()));
   disconnect(SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
 }
 
-bool CefContextPrivate::initialize(const CefConfig* config)
+bool QCefContextPrivate::initialize(const CefConfig* config)
 {
   config_ = config;
 
@@ -37,32 +43,32 @@ bool CefContextPrivate::initialize(const CefConfig* config)
   return true;
 }
 
-const CefConfig* CefContextPrivate::cefConfig() const
+const QCefConfig* QCefContextPrivate::cefConfig() const
 {
   return config_;
 }
 
-void CefContextPrivate::uninitialize()
+void QCefContextPrivate::uninitialize()
 {
   // cleanup CEF
   uninitializeCef();
 }
 
-void CefContextPrivate::scheduleCefLoopWork(int64_t delayMs)
+void QCefContextPrivate::scheduleCefLoopWork(int64_t delayMs)
 {
   // calculate the effective delay number
   auto delay = qMax((int64_t)0, qMin(delayMs, kCefWorkerIntervalMs));
   QTimer::singleShot(static_cast<int>(delay), this, SLOT(performCefLoopWork()));
 }
 
-void CefContextPrivate::onAboutToQuit()
+void QCefContextPrivate::onAboutToQuit()
 {
   if (!pApp_) {
     return;
   }
 
   // close all live browsers
-  QCefViewPrivate::destroyAllInstance();
+  QCefWidgetPrivate::destroyAllInstance();
 
   // check whether can exit now
   if (!pApp_->IsSafeToExit()) {
@@ -90,8 +96,49 @@ void CefContextPrivate::onAboutToQuit()
   }
 }
 
-void CefContextPrivate::performCefLoopWork()
+void QCefContextPrivate::performCefLoopWork()
 {
   // process cef work
   CefDoMessageLoopWork();
+}
+
+/////////////////////////////////////////////////
+// QCefContext
+
+QCefContext* QCefContext::s_self = nullptr;
+
+QCefContext::QCefContext(QCoreApplication* app, int argc, char* argv[], const QCefConfig* config)
+  : QObject(app)
+  , d_ptr(new QCefContextPrivate(app, argc, argv))
+{
+  init(config);
+}
+
+QCefContext* QCefContext::instance()
+{
+  return s_self;
+}
+
+QCefContext::~QCefContext()
+{
+  uninit();
+}
+
+bool QCefContext::init(const QCefConfig* config)
+{
+  Q_ASSERT_X(!s_self, "QCefContext::init()", "There can be only one QCefContext instance");
+  s_self = this;
+
+  Q_D(QCefContext);
+  d->initialize(config);
+
+  return true;
+}
+
+void QCefContext::uninit()
+{
+  Q_D(QCefContext);
+  d->uninitialize();
+
+  s_self = nullptr;
 }

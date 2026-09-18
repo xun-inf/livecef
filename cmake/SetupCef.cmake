@@ -126,13 +126,13 @@ ADD_LOGICAL_TARGET("libcef_lib" "${CEF_LIB_DEBUG}" "${CEF_LIB_RELEASE}")
 PRINT_CEF_CONFIG()
 
 # #################################################################################
-# Stage 4. Read CEF version and generated CefVersion.h
+# Stage 4. Read CEF version and generated qcefversion.h
 # set need configure QCefView_global to false
 message(STATUS "${CEF_ROOT}/include/cef_version.h")
 file(READ "${CEF_ROOT}/include/cef_version.h" cef_sdk_ver_content)
 
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/CefVersion.h")
-  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/CefVersion.h" cef_local_ver_content)
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/qcefversion.h")
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/qcefversion.h" cef_local_ver_content)
 else()
   set(local_cef_version_content "")
 endif()
@@ -163,15 +163,15 @@ compare_cef_version(CEF_COMMIT_NUMBER "([0-9]+)" "${cef_sdk_ver_content}" "${cef
 compare_cef_version(CEF_COMMIT_HASH "\"([a-z0-9]+)\"" "${cef_sdk_ver_content}" "${cef_local_ver_content}")
 
 if(${Need_Config_CefVersion_File})
-  message(STATUS "Need to configure CefVersion.h file")
+  message(STATUS "Need to configure qcefversion.h file")
   configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/CefVersion.h.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/CefVersion.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/qcefversion.h.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/qcefversion.h"
     @ONLY
     NEWLINE_STYLE UNIX
   )
 else()
-  message(STATUS "No need to configure CefVersion.h file")
+  message(STATUS "No need to configure qcefversion.h file")
 endif()
 
 # config CEF sandbox

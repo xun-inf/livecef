@@ -1,20 +1,23 @@
-#ifndef CEFVIEW_H
-#define CEFVIEW_H
+#ifndef QCEFWIDGET_H
+#define QCEFWIDGET_H
 #pragma once
 
-#include <CefView_global.h>
+#include <qcefium_global.h>
 #include <QString>
 #include <QWidget>
 
 /// A QWidget embedding a CEF browser (native child window rendering).
-class CefViewPrivate;
+class QCefWidgetPrivate;
 
-class LIVECEF_EXPORT CefView : public QWidget
+class QCEFIUM_EXPORT QCefWidget : public QWidget
 {
   Q_OBJECT
+  Q_DECLARE_PRIVATE(QCefWidget)
+  QScopedPointer<QCefViewPrivate> d_ptr;
+
 public:
-  explicit CefView(const QString& url = QString(), QWidget* parent = nullptr);
-  ~CefView() override;
+  explicit QCefWidget(const QString& url = QString(), QWidget* parent = nullptr);
+  ~QCefWidget() override;
 
   void loadUrl(const QString& url);
   QString url() const;
@@ -36,9 +39,7 @@ Q_SIGNALS:
 
 protected:
   void resizeEvent(QResizeEvent* event) override;
-
-private:
-  CefViewPrivate* d;
+  
 };
 
-#endif // CEFVIEW_H
+#endif // QCEFWIDGET_H

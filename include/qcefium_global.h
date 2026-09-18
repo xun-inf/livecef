@@ -1,5 +1,5 @@
-#ifndef CEFVIEW_GLOBAL_H
-#define CEFVIEW_GLOBAL_H
+#ifndef QCEFIUM_GLOBAL_H
+#define QCEFIUM_GLOBAL_H
 #pragma once
 
 #pragma region qt_headers
@@ -7,16 +7,33 @@
 #include <QMetaType>
 #pragma endregion
 
-#if defined(LIVECEF_STATIC)
-#define LIVECEF_EXPORT
-#elif defined(LIVECEF_LIBRARY)
-#define LIVECEF_EXPORT Q_DECL_EXPORT
+#if defined(QCEFIUM_STATIC)
+#define QCEFIUM_EXPORT
+#elif defined(QCEFIUM_LIBRARY)
+#define QCEFIUM_EXPORT Q_DECL_EXPORT
 #else
-#define LIVECEF_EXPORT Q_DECL_IMPORT
+#define QCEFIUM_EXPORT Q_DECL_IMPORT
+#endif
+
+#ifdef QCEFIUM_STATIC
+    // Static library, no need export
+    #define QCEFIUM_EXPORT
+#else
+    // Dynamic library
+    #ifdef QCEFIUM_LIB
+        // Build QCEFIUM project, export API
+        #define QCEFIUM_EXPORT Q_DECL_EXPORT
+    #else
+        // Referenced by other project, import API 
+        #define QCEFIUM_EXPORT Q_DECL_IMPORT
+        #if _WIN32
+            #pragma comment(lib, "qcefium.lib")
+        #endif
+    #endif
 #endif
 
 // CEF version numbers
-#include <CefVersion.h>
+#include <qcefversion.h>
 
 #define DEPRECATED_SINCE_CEF_VERSION(major, minor, patch) /* @deprecated Since CEF major . minor . patch */
 

@@ -1,10 +1,10 @@
 #
-# The main config file for livecef
+# The main config file for qcefium
 #
 cmake_minimum_required(VERSION 3.21)
-project(livecef)
+project(qcefium)
 
-set(CMAKE_FOLDER "livecef")
+set(CMAKE_FOLDER "qcefium")
 
 # options
 option(BUILD_DEMO
@@ -12,7 +12,7 @@ option(BUILD_DEMO
   OFF
 )
 option(BUILD_STATIC
-  "Build livecef as static library"
+  "Build qcefium as static library"
   OFF
 )
 option(STATIC_CRT
@@ -112,17 +112,17 @@ elseif("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
 endif()
 
 if(BUILD_STATIC)
-  set(LIVECEF_LIB_TYPE STATIC)
-  add_definitions(-DLIVECEF_STATIC=1)
+  set(QCEFIUM_LIB_TYPE STATIC)
+  add_definitions(-DQCEFIUM_STATIC=1)
 else()
-  set(LIVECEF_LIB_TYPE SHARED)
+  set(QCEFIUM_LIB_TYPE SHARED)
 endif()
 
 # detect whether we are in sub folder
-get_directory_property(LIVECEF_HAS_PARENT_DIRECTORY PARENT_DIRECTORY)
+get_directory_property(QCEFIUM_HAS_PARENT_DIRECTORY PARENT_DIRECTORY)
 
-if(NOT LIVECEF_HAS_PARENT_DIRECTORY)
-  message(STATUS "livecef is not in subdirectory, put all output together")
+if(NOT QCEFIUM_HAS_PARENT_DIRECTORY)
+  message(STATUS "qcefium is not in subdirectory, put all output together")
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/$<CONFIG>/bin)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/$<CONFIG>/bin)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/$<CONFIG>/lib)
@@ -175,14 +175,14 @@ if(OS_MACOS)
   endif()
 endif()
 
-# Config livecef target
+# Config qcefium target
 # ##############################################################
 add_subdirectory(src)
 
 # Config the Demo project
 # ##############################################################
 if(BUILD_DEMO)
-  add_subdirectory(example/LiveDemo)
+  add_subdirectory(example/QCefDemo)
 endif()
 
 # ##############################################################

@@ -1,15 +1,14 @@
 #pragma once
 
-#include "qtimer.h"
 #pragma region qt_headers
 #include <QCoreApplication>
 #include <QObject>
 #include <QTimer>
 #pragma endregion
 
-#include "CefConfigPrivate.h"
+#include <qcefconfig_p.h>
 
-class CefContextPrivate : public QObject
+class QCefContextPrivate : public QObject
 {
   Q_OBJECT
 
@@ -18,7 +17,7 @@ private:
 
   char** argv_;
 
-  const CefConfig* config_;
+  const QCefConfig* config_;
 
   QTimer cefWorkerTimer_;
 
@@ -29,13 +28,13 @@ private:
 #endif
 
 public:
-  CefContextPrivate(QCoreApplication* app, int argc, char** argv);
+  QCefContextPrivate(QCoreApplication* app, int argc, char** argv);
 
-  ~CefContextPrivate();
+  ~QCefContextPrivate();
 
-  bool initialize(const CefConfig* config);
+  bool initialize(const QCefConfig* config);
 
-  const CefConfig* cefConfig() const;
+  const QCefConfig* cefConfig() const;
 
   void uninitialize();
 
@@ -47,7 +46,7 @@ public slots:
   void performCefLoopWork();
 
 protected:
-  bool initializeCef(const CefConfig* config);
+  bool initializeCef(const QCefConfig* config);
 
   void uninitializeCef();
 };
